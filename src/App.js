@@ -109,7 +109,7 @@ function AdvanceProfile(props) {
 function TestPanel() {
     return (
         <div className="panel panel-default pitch-width">
-            <div className="panel-body">Panel Content</div>
+            <div className="panel-body">Panel Content1</div>
         </div>
     )
 }
