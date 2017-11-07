@@ -44,9 +44,32 @@
 }
 
 .pitch-width {
-  width: 40%;
+  width: 45%;
 }
 
 pre {
   white-space: pre-wrap;
+}
+
+.card-parent{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.card {
+  white-space: pre-wrap;
+}
+
+
+.card-width {
+  width: 500px;
+}
+
+.noto-regular-loaded {
+  font-family: 'Noto Sans Regular', Helvetica, sans-serif;
+}
+
+.dialogBox {
+  overflow: auto;
 }

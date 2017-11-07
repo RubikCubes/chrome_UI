@@ -6,111 +6,165 @@ import './App.css'
 import Switch from 'react-toggle-switch'
 import "react-toggle-switch/dist/css/switch.min.css"
 
-function Input(props) {
-    return (
-        <form>
-            <div className="form-group small-width form-margin">
-                <div><input className= 'form-control' name="projectName" value={props.currentValue.projectName} placeholder="Project Name" onChange = {props.updateNewPitch} /></div>
-                <div><input className= 'form-control' name="pitchName" value={props.currentValue.pitchName} placeholder="Pitch Name" onChange = {props.updateNewPitch}/></div>
-                <div><input className= 'form-control' name="shortCut" value={props.currentValue.shortcut} placeholder="Short cut" onChange = {props.updateNewPitch} /></div>
-                <div><input className= 'form-control' name="subject" value={props.currentValue.subject} placeholder="Subject" onChange = {props.updateNewPitch} /></div>
-                <div><textarea className= 'form-control' name="pitch" value={props.currentValue.pitch} placeholder="Enter Pitch" onChange = {props.updateNewPitch}/></div>
-                <Button className='button-margin' bsStyle="primary" type="submit" onClick={props.savePitch} >Add Pitch</Button>
-                <Button className='button-margin' bsStyle="danger" onClick={props.toggleForm}> Nevermind </Button>
-            </div>
-        </form>
-    )
-}
+import CheckState from './CheckState'
+import {ViewCurrentPitches, ViewCurrentPitches2} from './ViewCurrentPitches'
+import {SendInmailShortCut, AdvanceProfile} from './ShortCuts'
 
-function AddNewPitchForm(props){
-    return (
-        props.showForm ? 
-            <Input savePitch={props.savePitch} toggleForm = {props.toggleForm} currentValue = {props.currentValue} updateNewPitch={props.updateNewPitch} />
-            :
-            <Button className='button-margin' bsStyle="primary" onClick={props.toggleForm}>Add New Pitch</Button>
 
-    )
-}
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
+import TextField from 'material-ui/TextField';
+import {orange500, blue500} from 'material-ui/styles/colors';
+import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
-function CheckState(props){
-    function handleClick(e){
-        console.log(props.state)
-        console.log(JSON.parse(window.localStorage.getItem("pitches")))
-    }
-    return(
-        <Button className='button-margin' bsStyle="primary" onClick={handleClick}>Click for state</Button>
-    )
-}
+// Simple check if the browser understands the API
+// Is there a better/more reliable way of checking support?
+// if(document.fonts) {
+//   // Define a new FontFace
+//   const notoSansRegular = new FontFace('Noto Sans Regular', 'url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/144736/NotoSans-Regular.woff2), url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/144736/NotoSans-Regular.woff)');
+//   //console.log(notoSansRegular);
 
-function ViewCurrentPitches(props){
-    // props.pitches.map((value, index) => {console.log(value.pitchName)})
-    //update chrome storage
-    // console.log(props.state)
-    return (
-        props.state.savedPitches.map((pitch, i) => {
-            return pitch['update']
-                ?
-                <div key={pitch.id} className="form-group small-width form-margin">
-                    <div><input className= 'form-control' name="projectName" onChange = {props.handleEditUpdate} value={props.state.editPitch.projectName} placeholder="Project Name" /></div>
-                    <div><input className= 'form-control' name="pitchName" onChange = {props.handleEditUpdate} value={props.state.editPitch.pitchName} placeholder="Pitch Name" /></div>
-                    <div><input className= 'form-control' name="shortCut" onChange = {props.handleEditUpdate} value={props.state.editPitch.shortCut} placeholder="Short cut" /></div>
-                    <div><input className= 'form-control' name="subject" onChange = {props.handleEditUpdate} value={props.state.editPitch.subject} placeholder="Subject" /></div>
-                    <div><textarea className= 'form-control' name="pitch" onChange = {props.handleEditUpdate} value={props.state.editPitch.pitch} placeholder="Enter Pitch" /></div>
-                    <Button className='button-margin' bsStyle="primary" type="submit" onClick={props.completeEditUpdate}>Save</Button>
-                </div>
-                : 
-                <div key={pitch.id} className="bs-example pitch-width form-margin border-0">
-                    <div>
-                        <div>
-                            <strong>Project Name: </strong>
-                            <span>{pitch.projectName}</span>
-                        </div>
-                        <div>
-                            <strong>Pitch name: </strong>
-                            <span>{pitch.pitchName}</span>
-                        </div>
-                        <div>
-                            <strong>Short cut: </strong> 
-                            <span>{pitch.shortCut}</span>
-                        </div>
-                        <div>
-                            <strong>Subject: </strong>
-                            <span>{pitch.subject}</span>
-                        </div>
-                        <pre>{pitch.pitch}</pre>
-                    </div>
-                    <Button onClick={(e) => {props.edit(e, pitch)}} className='button-margin' bsStyle='warning'> Edit </Button>
-                    <Button onClick={(e) => {props.deletePitch(e, pitch)}} className='button-margin' bsStyle='danger'> Delete </Button>
-                </div>
-            })
-    )
-}
+//   // Add the FontFace to the FontFaceSet
+//   document.fonts.add(notoSansRegular);
 
-function SendInmailShortCut(props) {
-    return (
-        <div className='input-group pitch-width'>
-            <span class="input-group-addon" id="basic-addon1">Send Inmail Shortcut</span>
-            <input name= "sendInmailShortCut" value={props.currentState} onChange={props.updateState} type="text" class="form-control" placeholder="Send Inmail shortcut" aria-describedby="basic-addon1" />
-        </div>
-    )
-}
+//   // Get the current status of the FontFace
+//   // (should be 'unloaded')
+//   console.info('Current status', notoSansRegular.status);
 
-function AdvanceProfile(props) {
-    return (
-        <div className='input-group pitch-width'>
-            <span class="input-group-addon" id="basic-addon1">Advance Profile Shortcut</span>
-            <input name= "advanceProfileShortcut" value={props.currentState} onChange={props.updateState} type="text" class="form-control" placeholder="Advance Profile Shortcut" aria-describedby="basic-addon1" />
-        </div>
-    )
-}
-// <Switch onClick={props.onClick} on={props.on} />
-// function toggleNextProfileButton(props) {}
+//   // Load the FontFace
+//   notoSansRegular.load();
+
+//   // Get the current status of the Fontface
+//   // (should be 'loading' or 'loaded' if cached)
+//   console.info('Current status', notoSansRegular.status);
+
+//   // Wait until the font has been loaded, log the current status.
+//   notoSansRegular.loaded.then((fontFace) => {
+//     console.info('Current status', fontFace.status);
+//     console.log(fontFace.family, 'loaded successfully.');
+    
+//     // Add a class to the body element
+//     document.body.classList.add('noto-regular-loaded');
+    
+//   // Throw an error if loading wasn't successful
+//   }, (fontFace) => {
+//     console.error('Current status', notoSansRegular.status);
+//   });
+
+//   // Track if all fonts (if there are multiple) have been loaded
+//   // The 'ready' promise resolves if this is the case
+//   document.fonts.ready.then((fontFaceSet) => {
+//     console.log(fontFaceSet.size, 'FontFaces loaded.');
+//   });
+  
+// } else {
+//   console.error('Sorry, unsupported browser');
+// }
+
+// function Input(props) {
+//     console.log('input section')
+//     console.log(props.currentValue.projectName)
+//     return (
+//         <form>
+//             <div className="form-group small-width form-margin">
+//                 <div><input className= 'form-control' name="projectName" value={props.currentValue.projectName} placeholder="Project Name" onChange = {props.updateNewPitch} /></div>
+//                 <div><input className= 'form-control' name="pitchName" value={props.currentValue.pitchName} placeholder="Pitch Name" onChange = {props.updateNewPitch}/></div>
+//                 <div><input className= 'form-control' name="shortCut" value={props.currentValue.shortcut} placeholder="Short cut" onChange = {props.updateNewPitch} /></div>
+//                 <div><input className= 'form-control' name="subject" value={props.currentValue.subject} placeholder="Subject" onChange = {props.updateNewPitch} /></div>
+//                 <div><textarea className= 'form-control' name="pitch" value={props.currentValue.pitch} placeholder="Enter Pitch" onChange = {props.updateNewPitch}/></div>
+//                 <Button className='button-margin' bsStyle="primary" type="submit" onClick={props.savePitch} >Add Pitch</Button>
+//                 <Button className='button-margin' bsStyle="danger" onClick={props.toggleForm}> Nevermind </Button>
+//             </div>
+//         </form>
+//     )
+// }
+
+// function AddNewPitchForm(props){
+//     return (
+//         props.showForm ? 
+//             <Input savePitch={props.savePitch} toggleForm = {props.toggleForm} currentValue = {props.currentValue} updateNewPitch={props.updateNewPitch} />
+//             :
+//             <Button className='button-margin' bsStyle="primary" onClick={props.toggleForm}>Add New Pitch</Button>
+
+//     )
+// }
+
+
 
 function TestPanel() {
     return (
         <div className="panel panel-default pitch-width">
             <div className="panel-body">Panel Content1</div>
         </div>
+    )
+}
+
+
+const styles = {
+    errorStyle: {
+        color: orange500
+    }
+}
+
+const TextFieldExampleCustomize = (props) => {
+    return (
+        <div>
+            <TextField floatingLabelText="Linkedin Project Name" name="projectName" value={props.currentValue.projectName} onChange = {props.updateNewPitch} /> <div/>
+            <TextField floatingLabelText="Pitch Name" name="pitchName" value={props.currentValue.pitchName} onChange = {props.updateNewPitch} /> <div/>
+            <TextField floatingLabelText="Shortcut" name="shortCut" value={props.currentValue.shortcut} onChange = {props.updateNewPitch} /> <div/>
+            <TextField floatingLabelText="Subject" name="subject" value={props.currentValue.subject} onChange = {props.updateNewPitch} /> <div/>
+            <TextField
+                    name="pitch"
+                    value={props.currentValue.pitch}
+                    onChange = {props.updateNewPitch}
+                    fullWidth= {true}
+                    multiLine={true} 
+                    hintText="Pitch" 
+                    floatingLabelText="Pitch"
+            /> <div/>
+        </div>
+    ) 
+}
+
+const customContentStyle = {
+    width: '100%',
+    maxWidth: 'none',
+};
+
+function DialogBox (props) {
+    const actions = [
+        <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={props.handleClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        keyboardFocused={true}
+        onClick={props.handleSave}
+      />,
+    ];
+
+    return (
+        <div>
+            <RaisedButton label="Add New Pitch" onClick={props.handleOpen} />
+            <Dialog
+                className="dialogBox"
+                title="Add New Pitch"
+                actions={actions}
+                modal={true}
+                open={props.state}
+                onRequestClose={props.handleClose}
+                autoScrollBodyContent={true}
+                contentStyle={customContentStyle}
+            >
+                <TextFieldExampleCustomize currentValue = {props.currentValue} updateNewPitch = {props.updateNewPitch} />
+            </Dialog>
+      </div>
     )
 }
 
@@ -136,18 +190,46 @@ class Form extends React.Component{
             toggleInmailSwitch: false,
             sendInmailShortCut: '',
             advanceProfileShortcut: '',
+            dialogBox: false,
         };
+
         this.savePitch = this.savePitch.bind(this)
         this.updateNewPitch = this.updateNewPitch.bind(this)
         this.toggleNewPitchForm = this.toggleNewPitchForm.bind(this)
         this.handleEditUpdate = this.handleEditUpdate.bind(this)
         this.changeState = this.changeState.bind(this)
+        this.changeState2 = this.changeState2.bind(this)
         this.completeEditUpdate = this.completeEditUpdate.bind(this)
         this.handleEditUpdate = this.handleEditUpdate.bind(this)
         this.deletePitch = this.deletePitch.bind(this)
         this.toggleSendInmailSwitch = this.toggleSendInmailSwitch.bind(this)
         this.updateSimpleState = this.updateSimpleState.bind(this)
+        this.dialogBoxOpen  = this.dialogBoxOpen.bind(this)
+        this.dialogBoxClose = this.dialogBoxClose.bind(this)
+        this.dialogBoxSave = this.dialogBoxSave.bind(this)
+        this.dialogBoxOpenEdit = this.dialogBoxOpenEdit.bind(this)
     }
+
+    dialogBoxOpen() {
+        this.setState({dialogBox: true})
+    }
+
+    dialogBoxOpenEdit(e){
+        this.setState({dialogBox: true});
+        this.changeState(e)
+
+    }
+
+    dialogBoxClose() {
+        this.setState({dialogBox: false})
+    }
+
+    dialogBoxSave() {
+        this.savePitch()
+        this.setState({dialogBox: false})   
+    }
+
+
 
     updateSimpleState(e) {
         console.log([e.target.name])
@@ -200,6 +282,7 @@ class Form extends React.Component{
         
         newState.splice(this.state.editPitchIndex, 0, changePitchStatus)
 
+
         this.setState({
             editPitchIndex: '',
             editPitch: '',
@@ -251,12 +334,48 @@ class Form extends React.Component{
             // console.log(personBeingEdited)
             this.setState(
                 {
+                    dialogBox: true,
                     lockUpdate: true,
                     editPitchIndex: pitchIndex,
                     savedPitches: newState,
                     editPitch: pitchBeingEdited
                 },
 
+            )
+            return null
+        }
+
+    }
+
+    changeState2(e, pitch) {
+        const newState = this.state.savedPitches.slice()
+        let pitchBeingEdited
+        let pitchIndex
+
+        if (this.state.lockUpdate) {
+            alert('Complete Editing before starting new edit')
+
+        } else {
+            newState.map((mapPitch, index) => {
+                if (mapPitch['id'] === pitch['id']) {
+
+                    newState.splice(index, 1)
+
+                    pitchBeingEdited = {...mapPitch, update:!mapPitch['update']}
+                    pitchIndex = index
+                    newState.splice(index, 0, pitchBeingEdited)
+                }
+            })
+            // console.log(personBeingEdited)
+            this.setState(
+                {
+                    dialogBox: true,
+                    lockUpdate: true,
+                    editPitchIndex: pitchIndex,
+                    savedPitches: newState,
+                    editPitch: pitchBeingEdited
+                },
+                () => {console.log(this.state)}
             )
             return null
         }
@@ -282,19 +401,11 @@ class Form extends React.Component{
         this.setState({addNewPitchForm: !this.state.addNewPitchForm})
     }
 
+
+
     render() {
         return(
-            <div>
-                <AddNewPitchForm 
-                    showForm={this.state.addNewPitchForm} 
-                    savePitch={this.savePitch} 
-                    currentValue = {this.state.addNewPitch} 
-                    updateNewPitch = {this.updateNewPitch} 
-                    toggleForm = {this.toggleNewPitchForm}
-                />
-
-                <div />
-
+            <div>                
                 <ViewCurrentPitches 
                     edit = {this.changeState} 
                     state= {this.state}
@@ -307,16 +418,138 @@ class Form extends React.Component{
                 <br />
                 <AdvanceProfile updateState={this.updateSimpleState} currentState = {this.state.advanceProfileShortcut}/>
                 <br />
-                <CheckState state={this.state} />
-                <TestPanel>
-                    <ViewCurrentPitches 
-                    edit = {this.changeState} 
-                    state= {this.state}
-                    completeEditUpdate = {this.completeEditUpdate}
-                    handleEditUpdate = {this.handleEditUpdate}
-                    deletePitch = {this.deletePitch}
+                <CheckState currentValue={this.state} />
+                <br/>
+                
+                <br/>
+                <DialogBox 
+                        handleOpen={this.dialogBoxOpen} 
+                        handleClose={this.dialogBoxClose}
+                        handleSave={this.dialogBoxSave}
+                        state={this.state.dialogBox} 
+                        currentValue = {this.state.addNewPitch}
+                        updateNewPitch = {this.updateNewPitch}
+                        edit = {this.changeState}
+                />
+                <br />
+                <Divider />
+                <div className='card-parent'>
+                    <ViewCurrentPitches2
+                        edit = {this.changeState} 
+                        state= {this.state}
+                        completeEditUpdate = {this.completeEditUpdate}
+                        handleEditUpdate = {this.handleEditUpdate}
+                        deletePitch = {this.deletePitch}
+                        handleSave={this.dialogBoxSave}
+                        currentValue={this.state.editPitch}
+                        handleOpen = {this.changeState2}
                     />
-                </TestPanel>
+                </div>
+
+                <Divider />
+                <h2>Back End</h2>
+
+                <Divider />
+                <div className='card-parent'>
+                    <Card className = 'form-margin card-width' zDepth={3}>
+                        <CardText>
+                        Hi this<br/>
+                        <br/>
+                        is<br/>
+                            some<br/>
+                        text
+                        </CardText>
+                        <CardActions>
+                            <FlatButton label="Edit" />
+                            <FlatButton label="Delete" />
+                        </CardActions>
+                    </Card>
+                    <Card className = 'form-margin card-width' zDepth={3}>
+                        <CardText>
+                            Hey "+first_name+"<br />
+                            <br />
+                            I am on the recruiting team at NerdWallet and wanted to see if you might be open a role on our team. We are a Series A startup with 10’s of millions of users and generating $100MM+ in revenue.<br/>
+                            <br/>
+                            We are working to be the trusted source for helping consumers make the best financial decisions. Our goal is to provide clarity and instill confidence as we put consumers on the path from financial distress to financial freedom.<br />
+                            <br />
+                            We are looking for senior level engineers to work across PED (Product, Engineering & Design) and act as a liaison with the business teams. You will be able to define, develop and launch new products or scale existing ones that already reach 10's of millions of users.<br />
+                            <br />
+                            Let me know if are interested, I'd certainly like to tell you more about us! Thanks "+first_name+".<br />
+                            <br />
+                            Best,<br />
+                            Morgan"
+                        </CardText>
+                        <CardActions>
+                            <FlatButton label="Edit" />
+                            <FlatButton label="Delete" />
+                        </CardActions>
+                    </Card>
+                    <Card className = 'form-margin card-width' zDepth={3}>
+                        <CardText>
+                            Hey "+first_name+"<br />
+                            <br />
+                            I am on the recruiting team at NerdWallet and wanted to see if you might be open a role on our team. We are a Series A startup with 10’s of millions of users and generating $100MM+ in revenue.<br/>
+                            <br/>
+                            We are working to be the trusted source for helping consumers make the best financial decisions. Our goal is to provide clarity and instill confidence as we put consumers on the path from financial distress to financial freedom.<br />
+                            <br />
+                            We are looking for senior level engineers to work across PED (Product, Engineering & Design) and act as a liaison with the business teams. You will be able to define, develop and launch new products or scale existing ones that already reach 10's of millions of users.<br />
+                            <br />
+                            Let me know if are interested, I'd certainly like to tell you more about us! Thanks "+first_name+".<br />
+                            <br />
+                            Best,<br />
+                            Morgan"
+                        </CardText>
+                        <CardActions>
+                            <FlatButton label="Edit" />
+                            <FlatButton label="Delete" />
+                        </CardActions>
+                    </Card>
+                </div>
+                <h2>Front End</h2>
+                <Divider />
+                <div className='card'>
+                    <Card className = 'form-margin card-width' zDepth={3}>
+                        <CardText>
+                            Hey "+first_name+"<br />
+                            <br />
+                            I am on the recruiting team at NerdWallet and wanted to see if you might be open a role on our team. We are a Series A startup with 10’s of millions of users and generating $100MM+ in revenue.<br/>
+                            <br/>
+                            We are working to be the trusted source for helping consumers make the best financial decisions. Our goal is to provide clarity and instill confidence as we put consumers on the path from financial distress to financial freedom.<br />
+                            <br />
+                            We are looking for senior level engineers to work across PED (Product, Engineering & Design) and act as a liaison with the business teams. You will be able to define, develop and launch new products or scale existing ones that already reach 10's of millions of users.<br />
+                            <br />
+                            Let me know if are interested, I'd certainly like to tell you more about us! Thanks "+first_name+".<br />
+                            <br />
+                            Best,<br />
+                            Morgan"
+                        </CardText>
+                        <CardActions>
+                            <FlatButton label="Edit" />
+                            <FlatButton label="Delete" />
+                        </CardActions>
+                    </Card>
+                    <Card className = 'form-margin card-width' zDepth={3}>
+                        <CardText>
+                            Hey "+first_name+"<br />
+                            <br />
+                            I am on the recruiting team at NerdWallet and wanted to see if you might be open a role on our team. We are a Series A startup with 10’s of millions of users and generating $100MM+ in revenue.<br/>
+                            <br/>
+                            We are working to be the trusted source for helping consumers make the best financial decisions. Our goal is to provide clarity and instill confidence as we put consumers on the path from financial distress to financial freedom.<br />
+                            <br />
+                            We are looking for senior level engineers to work across PED (Product, Engineering & Design) and act as a liaison with the business teams. You will be able to define, develop and launch new products or scale existing ones that already reach 10's of millions of users.<br />
+                            <br />
+                            Let me know if are interested, I'd certainly like to tell you more about us! Thanks "+first_name+".<br />
+                            <br />
+                            Best,<br />
+                            Morgan"
+                        </CardText>
+                        <CardActions>
+                            <FlatButton label="Edit" />
+                            <FlatButton label="Delete" />
+                        </CardActions>
+                    </Card>
+                </div>
+
 
             </div>
 
