@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { Button } from 'react-bootstrap'
+
 import 'bootstrap/dist/css/bootstrap.css'
 import './App.css'
-import Switch from 'react-toggle-switch'
+
 import "react-toggle-switch/dist/css/switch.min.css"
 
 import CheckState from './CheckState'
-import {ViewCurrentPitches, ViewCurrentPitches2} from './ViewCurrentPitches'
+import {ViewCurrentPitches, ViewCurrentPitches2, DialogBox, TextFieldExampleCustomize} from './ViewCurrentPitches'
 import {SendInmailShortCut, AdvanceProfile} from './ShortCuts'
 
 
@@ -15,54 +15,14 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
-import {orange500, blue500} from 'material-ui/styles/colors';
+// import {orange500, blue500} from 'material-ui/styles/colors';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+// import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
-// Simple check if the browser understands the API
-// Is there a better/more reliable way of checking support?
-// if(document.fonts) {
-//   // Define a new FontFace
-//   const notoSansRegular = new FontFace('Noto Sans Regular', 'url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/144736/NotoSans-Regular.woff2), url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/144736/NotoSans-Regular.woff)');
-//   //console.log(notoSansRegular);
+import notoSansRegular from './Fonts'
 
-//   // Add the FontFace to the FontFaceSet
-//   document.fonts.add(notoSansRegular);
-
-//   // Get the current status of the FontFace
-//   // (should be 'unloaded')
-//   console.info('Current status', notoSansRegular.status);
-
-//   // Load the FontFace
-//   notoSansRegular.load();
-
-//   // Get the current status of the Fontface
-//   // (should be 'loading' or 'loaded' if cached)
-//   console.info('Current status', notoSansRegular.status);
-
-//   // Wait until the font has been loaded, log the current status.
-//   notoSansRegular.loaded.then((fontFace) => {
-//     console.info('Current status', fontFace.status);
-//     console.log(fontFace.family, 'loaded successfully.');
-    
-//     // Add a class to the body element
-//     document.body.classList.add('noto-regular-loaded');
-    
-//   // Throw an error if loading wasn't successful
-//   }, (fontFace) => {
-//     console.error('Current status', notoSansRegular.status);
-//   });
-
-//   // Track if all fonts (if there are multiple) have been loaded
-//   // The 'ready' promise resolves if this is the case
-//   document.fonts.ready.then((fontFaceSet) => {
-//     console.log(fontFaceSet.size, 'FontFaces loaded.');
-//   });
-  
-// } else {
-//   console.error('Sorry, unsupported browser');
-// }
+notoSansRegular()
 
 // function Input(props) {
 //     console.log('input section')
@@ -93,82 +53,6 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 // }
 
 
-
-function TestPanel() {
-    return (
-        <div className="panel panel-default pitch-width">
-            <div className="panel-body">Panel Content1</div>
-        </div>
-    )
-}
-
-
-const styles = {
-    errorStyle: {
-        color: orange500
-    }
-}
-
-const TextFieldExampleCustomize = (props) => {
-    return (
-        <div>
-            <TextField floatingLabelText="Linkedin Project Name" name="projectName" value={props.currentValue.projectName} onChange = {props.updateNewPitch} /> <div/>
-            <TextField floatingLabelText="Pitch Name" name="pitchName" value={props.currentValue.pitchName} onChange = {props.updateNewPitch} /> <div/>
-            <TextField floatingLabelText="Shortcut" name="shortCut" value={props.currentValue.shortcut} onChange = {props.updateNewPitch} /> <div/>
-            <TextField floatingLabelText="Subject" name="subject" value={props.currentValue.subject} onChange = {props.updateNewPitch} /> <div/>
-            <TextField
-                    name="pitch"
-                    value={props.currentValue.pitch}
-                    onChange = {props.updateNewPitch}
-                    fullWidth= {true}
-                    multiLine={true} 
-                    hintText="Pitch" 
-                    floatingLabelText="Pitch"
-            /> <div/>
-        </div>
-    ) 
-}
-
-const customContentStyle = {
-    width: '100%',
-    maxWidth: 'none',
-};
-
-function DialogBox (props) {
-    const actions = [
-        <FlatButton
-        label="Cancel"
-        primary={true}
-        onClick={props.handleClose}
-      />,
-      <FlatButton
-        label="Submit"
-        primary={true}
-        keyboardFocused={true}
-        onClick={props.handleSave}
-      />,
-    ];
-
-    return (
-        <div>
-            <RaisedButton label="Add New Pitch" onClick={props.handleOpen} />
-            <Dialog
-                className="dialogBox"
-                title="Add New Pitch"
-                actions={actions}
-                modal={true}
-                open={props.state}
-                onRequestClose={props.handleClose}
-                autoScrollBodyContent={true}
-                contentStyle={customContentStyle}
-            >
-                <TextFieldExampleCustomize currentValue = {props.currentValue} updateNewPitch = {props.updateNewPitch} />
-            </Dialog>
-      </div>
-    )
-}
-
-
 class Form extends React.Component{
     constructor(props){
         super(props);
@@ -184,13 +68,14 @@ class Form extends React.Component{
             },
             savedPitches: [],
             addNewPitchForm: false,
-            editPitch: '',
+            pitchBeingEdited: '',
             editPitchIndex: '',
             lockUpdate: false,
             toggleInmailSwitch: false,
             sendInmailShortCut: '',
             advanceProfileShortcut: '',
             dialogBox: false,
+            editPitch: false
         };
 
         this.savePitch = this.savePitch.bind(this)
@@ -198,7 +83,6 @@ class Form extends React.Component{
         this.toggleNewPitchForm = this.toggleNewPitchForm.bind(this)
         this.handleEditUpdate = this.handleEditUpdate.bind(this)
         this.changeState = this.changeState.bind(this)
-        this.changeState2 = this.changeState2.bind(this)
         this.completeEditUpdate = this.completeEditUpdate.bind(this)
         this.handleEditUpdate = this.handleEditUpdate.bind(this)
         this.deletePitch = this.deletePitch.bind(this)
@@ -207,17 +91,55 @@ class Form extends React.Component{
         this.dialogBoxOpen  = this.dialogBoxOpen.bind(this)
         this.dialogBoxClose = this.dialogBoxClose.bind(this)
         this.dialogBoxSave = this.dialogBoxSave.bind(this)
-        this.dialogBoxOpenEdit = this.dialogBoxOpenEdit.bind(this)
+        this.toggleEdit = this.toggleEdit.bind(this)
+        this.closeEditPitch = this.closeEditPitch.bind(this)
+        this.updatePitchBeingEdited = this.updatePitchBeingEdited.bind(this)
+        
+    }
+
+    toggleEdit(e, pitch) {
+        const newState = this.state.savedPitches.slice()
+        let pitchBeingEdited
+        let pitchIndex
+
+        newState.map((mapPitch, index) => {
+            if (mapPitch['id'] === pitch['id']) {
+
+                // newState.splice(index, 1)
+
+                // pitchBeingEdited = {...mapPitch, update:!mapPitch['update']}
+                pitchBeingEdited = mapPitch
+                pitchIndex = index
+                // newState.splice(index, 0, pitchBeingEdited)
+            }
+        })
+
+        this.setState(
+            {
+                pitchBeingEdited: pitchBeingEdited,
+                editPitchIndex: pitchIndex,
+                editPitch: true
+
+            }
+        )
+    }
+
+    updatePitchBeingEdited(e) {
+        this.setState({pitchBeingEdite: {...this.state.pitchBeingEdite, [e.target.name]: e.target.value}})
+    }
+
+        
+        
+        
+
+        
+
+    closeEditPitch() {
+        this.setState({editPitch: false})
     }
 
     dialogBoxOpen() {
         this.setState({dialogBox: true})
-    }
-
-    dialogBoxOpenEdit(e){
-        this.setState({dialogBox: true});
-        this.changeState(e)
-
     }
 
     dialogBoxClose() {
@@ -347,40 +269,9 @@ class Form extends React.Component{
 
     }
 
-    changeState2(e, pitch) {
-        const newState = this.state.savedPitches.slice()
-        let pitchBeingEdited
-        let pitchIndex
 
-        if (this.state.lockUpdate) {
-            alert('Complete Editing before starting new edit')
 
-        } else {
-            newState.map((mapPitch, index) => {
-                if (mapPitch['id'] === pitch['id']) {
-
-                    newState.splice(index, 1)
-
-                    pitchBeingEdited = {...mapPitch, update:!mapPitch['update']}
-                    pitchIndex = index
-                    newState.splice(index, 0, pitchBeingEdited)
-                }
-            })
-            // console.log(personBeingEdited)
-            this.setState(
-                {
-                    dialogBox: true,
-                    lockUpdate: true,
-                    editPitchIndex: pitchIndex,
-                    savedPitches: newState,
-                    editPitch: pitchBeingEdited
-                },
-                () => {console.log(this.state)}
-            )
-            return null
-        }
-
-    }
+    
 
     savePitch(e){
         this.setState({savedPitches: [...this.state.savedPitches, this.state.addNewPitch]})
@@ -401,8 +292,6 @@ class Form extends React.Component{
         this.setState({addNewPitchForm: !this.state.addNewPitchForm})
     }
 
-
-
     render() {
         return(
             <div>                
@@ -422,28 +311,27 @@ class Form extends React.Component{
                 <br/>
                 
                 <br/>
-                <DialogBox 
-                        handleOpen={this.dialogBoxOpen} 
-                        handleClose={this.dialogBoxClose}
-                        handleSave={this.dialogBoxSave}
-                        state={this.state.dialogBox} 
-                        currentValue = {this.state.addNewPitch}
-                        updateNewPitch = {this.updateNewPitch}
-                        edit = {this.changeState}
+                <DialogBox  
+                    handleOpen={this.dialogBoxOpen} 
+                    handleClose={this.dialogBoxClose} 
+                    handleSave={this.dialogBoxSave} 
+                    state={this.state.dialogBox} 
+                    currentValue = {this.state.addNewPitch}
+                    updateNewPitch = {this.updateNewPitch}
+                    edit = {this.changeState}
                 />
                 <br />
                 <Divider />
+
                 <div className='card-parent'>
                     <ViewCurrentPitches2
-                        edit = {this.changeState} 
                         state= {this.state}
-                        completeEditUpdate = {this.completeEditUpdate}
-                        handleEditUpdate = {this.handleEditUpdate}
                         deletePitch = {this.deletePitch}
                         handleSave={this.dialogBoxSave}
-                        currentValue={this.state.editPitch}
-                        handleOpen = {this.changeState2}
+                        toggleEdit = {this.toggleEdit}
+                        closeEditPitch = {this.closeEditPitch}
                     />
+                        }
                 </div>
 
                 <Divider />
@@ -484,50 +372,10 @@ class Form extends React.Component{
                             <FlatButton label="Delete" />
                         </CardActions>
                     </Card>
-                    <Card className = 'form-margin card-width' zDepth={3}>
-                        <CardText>
-                            Hey "+first_name+"<br />
-                            <br />
-                            I am on the recruiting team at NerdWallet and wanted to see if you might be open a role on our team. We are a Series A startup with 10’s of millions of users and generating $100MM+ in revenue.<br/>
-                            <br/>
-                            We are working to be the trusted source for helping consumers make the best financial decisions. Our goal is to provide clarity and instill confidence as we put consumers on the path from financial distress to financial freedom.<br />
-                            <br />
-                            We are looking for senior level engineers to work across PED (Product, Engineering & Design) and act as a liaison with the business teams. You will be able to define, develop and launch new products or scale existing ones that already reach 10's of millions of users.<br />
-                            <br />
-                            Let me know if are interested, I'd certainly like to tell you more about us! Thanks "+first_name+".<br />
-                            <br />
-                            Best,<br />
-                            Morgan"
-                        </CardText>
-                        <CardActions>
-                            <FlatButton label="Edit" />
-                            <FlatButton label="Delete" />
-                        </CardActions>
-                    </Card>
                 </div>
                 <h2>Front End</h2>
                 <Divider />
                 <div className='card'>
-                    <Card className = 'form-margin card-width' zDepth={3}>
-                        <CardText>
-                            Hey "+first_name+"<br />
-                            <br />
-                            I am on the recruiting team at NerdWallet and wanted to see if you might be open a role on our team. We are a Series A startup with 10’s of millions of users and generating $100MM+ in revenue.<br/>
-                            <br/>
-                            We are working to be the trusted source for helping consumers make the best financial decisions. Our goal is to provide clarity and instill confidence as we put consumers on the path from financial distress to financial freedom.<br />
-                            <br />
-                            We are looking for senior level engineers to work across PED (Product, Engineering & Design) and act as a liaison with the business teams. You will be able to define, develop and launch new products or scale existing ones that already reach 10's of millions of users.<br />
-                            <br />
-                            Let me know if are interested, I'd certainly like to tell you more about us! Thanks "+first_name+".<br />
-                            <br />
-                            Best,<br />
-                            Morgan"
-                        </CardText>
-                        <CardActions>
-                            <FlatButton label="Edit" />
-                            <FlatButton label="Delete" />
-                        </CardActions>
-                    </Card>
                     <Card className = 'form-margin card-width' zDepth={3}>
                         <CardText>
                             Hey "+first_name+"<br />
