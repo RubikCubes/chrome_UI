@@ -7,7 +7,7 @@ import './App.css'
 import "react-toggle-switch/dist/css/switch.min.css"
 
 import CheckState from './CheckState'
-import {ViewCurrentPitches, ViewCurrentPitches2, DialogBox, TextFieldExampleCustomize} from './ViewCurrentPitches'
+import {ViewCurrentPitches2, NewPitch, TextFieldExampleCustomize} from './ViewCurrentPitches'
 import {SendInmailShortCut, AdvanceProfile} from './ShortCuts'
 
 
@@ -94,6 +94,7 @@ class Form extends React.Component{
         this.toggleEdit = this.toggleEdit.bind(this)
         this.closeEditPitch = this.closeEditPitch.bind(this)
         this.updatePitchBeingEdited = this.updatePitchBeingEdited.bind(this)
+        this.savePitchBeingEdited = this.savePitchBeingEdited.bind(this)
         
     }
 
@@ -125,15 +126,26 @@ class Form extends React.Component{
     }
 
     updatePitchBeingEdited(e) {
-        this.setState({pitchBeingEdite: {...this.state.pitchBeingEdite, [e.target.name]: e.target.value}})
+        this.setState(
+            {pitchBeingEdited: {...this.state.pitchBeingEdited, [e.target.name]: e.target.value}}
+        );
     }
 
-        
-        
-        
+    savePitchBeingEdited(){
+        const newState = this.state.savedPitches.slice()
 
+        newState.splice(this.state.editPitchIndex, 1)
         
+        newState.splice(this.state.editPitchIndex, 0, this.state.pitchBeingEdited)
 
+        console.log(newState)
+
+        this.setState({
+            savedPitches: newState,
+            editPitch: false
+        })
+    }
+        
     closeEditPitch() {
         this.setState({editPitch: false})
     }
@@ -295,23 +307,15 @@ class Form extends React.Component{
     render() {
         return(
             <div>                
-                <ViewCurrentPitches 
-                    edit = {this.changeState} 
-                    state= {this.state}
-                    completeEditUpdate = {this.completeEditUpdate}
-                    handleEditUpdate = {this.handleEditUpdate}
-                    deletePitch = {this.deletePitch}
-                />
-
                 <SendInmailShortCut updateState={this.updateSimpleState} currentState = {this.state.sendInmailShortCut} />
                 <br />
                 <AdvanceProfile updateState={this.updateSimpleState} currentState = {this.state.advanceProfileShortcut}/>
                 <br />
-                <CheckState currentValue={this.state} />
+                <CheckState currentState={this.state} />
                 <br/>
                 
                 <br/>
-                <DialogBox  
+                <NewPitch  
                     handleOpen={this.dialogBoxOpen} 
                     handleClose={this.dialogBoxClose} 
                     handleSave={this.dialogBoxSave} 
@@ -330,77 +334,11 @@ class Form extends React.Component{
                         handleSave={this.dialogBoxSave}
                         toggleEdit = {this.toggleEdit}
                         closeEditPitch = {this.closeEditPitch}
+                        updatePitchBeingEdited = {this.updatePitchBeingEdited}
+                        savePitchBeingEdited = {this.savePitchBeingEdited}
                     />
-                        }
                 </div>
-
-                <Divider />
-                <h2>Back End</h2>
-
-                <Divider />
-                <div className='card-parent'>
-                    <Card className = 'form-margin card-width' zDepth={3}>
-                        <CardText>
-                        Hi this<br/>
-                        <br/>
-                        is<br/>
-                            some<br/>
-                        text
-                        </CardText>
-                        <CardActions>
-                            <FlatButton label="Edit" />
-                            <FlatButton label="Delete" />
-                        </CardActions>
-                    </Card>
-                    <Card className = 'form-margin card-width' zDepth={3}>
-                        <CardText>
-                            Hey "+first_name+"<br />
-                            <br />
-                            I am on the recruiting team at NerdWallet and wanted to see if you might be open a role on our team. We are a Series A startup with 10’s of millions of users and generating $100MM+ in revenue.<br/>
-                            <br/>
-                            We are working to be the trusted source for helping consumers make the best financial decisions. Our goal is to provide clarity and instill confidence as we put consumers on the path from financial distress to financial freedom.<br />
-                            <br />
-                            We are looking for senior level engineers to work across PED (Product, Engineering & Design) and act as a liaison with the business teams. You will be able to define, develop and launch new products or scale existing ones that already reach 10's of millions of users.<br />
-                            <br />
-                            Let me know if are interested, I'd certainly like to tell you more about us! Thanks "+first_name+".<br />
-                            <br />
-                            Best,<br />
-                            Morgan"
-                        </CardText>
-                        <CardActions>
-                            <FlatButton label="Edit" />
-                            <FlatButton label="Delete" />
-                        </CardActions>
-                    </Card>
-                </div>
-                <h2>Front End</h2>
-                <Divider />
-                <div className='card'>
-                    <Card className = 'form-margin card-width' zDepth={3}>
-                        <CardText>
-                            Hey "+first_name+"<br />
-                            <br />
-                            I am on the recruiting team at NerdWallet and wanted to see if you might be open a role on our team. We are a Series A startup with 10’s of millions of users and generating $100MM+ in revenue.<br/>
-                            <br/>
-                            We are working to be the trusted source for helping consumers make the best financial decisions. Our goal is to provide clarity and instill confidence as we put consumers on the path from financial distress to financial freedom.<br />
-                            <br />
-                            We are looking for senior level engineers to work across PED (Product, Engineering & Design) and act as a liaison with the business teams. You will be able to define, develop and launch new products or scale existing ones that already reach 10's of millions of users.<br />
-                            <br />
-                            Let me know if are interested, I'd certainly like to tell you more about us! Thanks "+first_name+".<br />
-                            <br />
-                            Best,<br />
-                            Morgan"
-                        </CardText>
-                        <CardActions>
-                            <FlatButton label="Edit" />
-                            <FlatButton label="Delete" />
-                        </CardActions>
-                    </Card>
-                </div>
-
-
             </div>
-
         )
     }
 }

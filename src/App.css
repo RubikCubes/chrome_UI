@@ -73,3 +73,10 @@ pre {
 .dialogBox {
   overflow: auto;
 }
+
+#centerpoint {
+  top: 50%;
+  left: 50%;
+  position:absolute;
+}
+
