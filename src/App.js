@@ -138,12 +138,14 @@ class Form extends React.Component{
         
         newState.splice(this.state.editPitchIndex, 0, this.state.pitchBeingEdited)
 
-        console.log(newState)
-
         this.setState({
+            editPitch: '',
+            editPitchIndex: '',
             savedPitches: newState,
             editPitch: false
-        })
+        }, 
+        () => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')})
+        )
     }
         
     closeEditPitch() {
@@ -166,7 +168,6 @@ class Form extends React.Component{
 
 
     updateSimpleState(e) {
-        console.log([e.target.name])
         this.setState({[e.target.name]: e.target.value})
     }
 

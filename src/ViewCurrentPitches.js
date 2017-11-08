@@ -81,7 +81,7 @@ export function ViewCurrentPitches2(props) {
         onClick={props.savePitchBeingEdited}
       />,
     ];
-    // console.log(props.state)
+    
     return (
         props.state.savedPitches.map((pitch, i) => {
             return(
