@@ -80,3 +80,16 @@ pre {
   position:absolute;
 }
 
+#card-actions {
+  position: absolute;
+}
+
+#left-button {
+  position: absolute;
+}
+
+.flat-button {
+  color: #1A237E;
+}
+
+

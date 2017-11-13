@@ -6,51 +6,24 @@ import './App.css'
 
 import "react-toggle-switch/dist/css/switch.min.css"
 
-import CheckState from './CheckState'
+import Buttons from './CheckState'
 import {ViewCurrentPitches2, NewPitch, TextFieldExampleCustomize} from './ViewCurrentPitches'
 import {SendInmailShortCut, AdvanceProfile} from './ShortCuts'
+
+import {ListNames, ViewHeaders} from './UpdatePitchNamesTest'
 
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
-// import {orange500, blue500} from 'material-ui/styles/colors';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-// import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+
 
 import notoSansRegular from './Fonts'
 
 notoSansRegular()
-
-// function Input(props) {
-//     console.log('input section')
-//     console.log(props.currentValue.projectName)
-//     return (
-//         <form>
-//             <div className="form-group small-width form-margin">
-//                 <div><input className= 'form-control' name="projectName" value={props.currentValue.projectName} placeholder="Project Name" onChange = {props.updateNewPitch} /></div>
-//                 <div><input className= 'form-control' name="pitchName" value={props.currentValue.pitchName} placeholder="Pitch Name" onChange = {props.updateNewPitch}/></div>
-//                 <div><input className= 'form-control' name="shortCut" value={props.currentValue.shortcut} placeholder="Short cut" onChange = {props.updateNewPitch} /></div>
-//                 <div><input className= 'form-control' name="subject" value={props.currentValue.subject} placeholder="Subject" onChange = {props.updateNewPitch} /></div>
-//                 <div><textarea className= 'form-control' name="pitch" value={props.currentValue.pitch} placeholder="Enter Pitch" onChange = {props.updateNewPitch}/></div>
-//                 <Button className='button-margin' bsStyle="primary" type="submit" onClick={props.savePitch} >Add Pitch</Button>
-//                 <Button className='button-margin' bsStyle="danger" onClick={props.toggleForm}> Nevermind </Button>
-//             </div>
-//         </form>
-//     )
-// }
-
-// function AddNewPitchForm(props){
-//     return (
-//         props.showForm ? 
-//             <Input savePitch={props.savePitch} toggleForm = {props.toggleForm} currentValue = {props.currentValue} updateNewPitch={props.updateNewPitch} />
-//             :
-//             <Button className='button-margin' bsStyle="primary" onClick={props.toggleForm}>Add New Pitch</Button>
-
-//     )
-// }
 
 
 class Form extends React.Component{
@@ -59,6 +32,7 @@ class Form extends React.Component{
         this.state = {
             addNewPitch: {
                 id: 1,
+                groupName: '',
                 projectName: '',
                 pitchName: '',
                 shortCut: '',
@@ -75,7 +49,9 @@ class Form extends React.Component{
             sendInmailShortCut: '',
             advanceProfileShortcut: '',
             dialogBox: false,
-            editPitch: false
+            editPitch: false,
+            pitchesSortedByName: {},
+            pitchNameKeys: []
         };
 
         this.savePitch = this.savePitch.bind(this)
@@ -95,7 +71,33 @@ class Form extends React.Component{
         this.closeEditPitch = this.closeEditPitch.bind(this)
         this.updatePitchBeingEdited = this.updatePitchBeingEdited.bind(this)
         this.savePitchBeingEdited = this.savePitchBeingEdited.bind(this)
+        this.sortPitchesByName = this.sortPitchesByName.bind(this)
         
+    }
+
+
+
+    sortPitchesByName() {
+        var keys = []
+
+        var data = {}
+
+        this.state.savedPitches.map((pitch, index) => {
+            if (keys.indexOf(pitch.pitchName) != -1) {
+                data[pitch.pitchName].push(pitch)
+            } else {
+                keys.push(pitch.pitchName)
+                data[pitch.pitchName] = [pitch]
+            }
+        })
+
+        // console.log(keys)
+        // console.log(data)
+
+        this.setState({
+            pitchesSortedByName: data,
+            pitchNameKeys: keys
+        })
     }
 
     toggleEdit(e, pitch) {
@@ -105,13 +107,8 @@ class Form extends React.Component{
 
         newState.map((mapPitch, index) => {
             if (mapPitch['id'] === pitch['id']) {
-
-                // newState.splice(index, 1)
-
-                // pitchBeingEdited = {...mapPitch, update:!mapPitch['update']}
                 pitchBeingEdited = mapPitch
                 pitchIndex = index
-                // newState.splice(index, 0, pitchBeingEdited)
             }
         })
 
@@ -143,8 +140,11 @@ class Form extends React.Component{
             editPitchIndex: '',
             savedPitches: newState,
             editPitch: false
-        }, 
-        () => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')})
+        },
+        () => {
+            (() => {this.sortPitchesByName()}) ();
+            (() => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')})) ()
+        }
         )
     }
         
@@ -157,12 +157,48 @@ class Form extends React.Component{
     }
 
     dialogBoxClose() {
-        this.setState({dialogBox: false})
+
+        var currentID = this.state.addNewPitch.id
+
+        this.setState({
+            addNewPitch: {
+                id: currentID,
+                groupName: '',
+                projectName: '',
+                pitchName: '',
+                shortCut: '',
+                subject: '',
+                pitch: '',
+                update: false
+            },
+            dialogBox: false
+        })
     }
 
     dialogBoxSave() {
         this.savePitch()
         this.setState({dialogBox: false})   
+    }
+
+    savePitch(e){
+        this.setState({savedPitches: [...this.state.savedPitches, this.state.addNewPitch]})
+        this.setState({addNewPitch: {
+            id: this.state.addNewPitch.id + 1,
+            pitchName: '',
+            shortCut: '',
+            subject: '',
+            pitch: ''
+        }},
+        () => {
+            (() => {this.sortPitchesByName()}) ();
+            (() => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')})) ()
+        }
+        )
+        this.toggleNewPitchForm()
+    }
+
+    updateLocalStorage() {
+        () => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')}) 
     }
 
 
@@ -188,13 +224,16 @@ class Form extends React.Component{
             this.setState({
                 savedPitches: savedPitches,
                 addNewPitch: {...this.state.addNewPitch, id: highestId + 1}
-            })   
+            }, () => {this.sortPitchesByName()}
+            )   
         }
 
         var pitchesNotFound = () => {
             highestId = 0;
             this.setState({emptyList})
-        }        
+        }
+
+
         
         savedPitches 
             ?
@@ -235,16 +274,23 @@ class Form extends React.Component{
                 newState.splice(index, 1)
             }
         });
-        console.log(newState)
+
         this.setState({
             savedPitches: newState
         },
-        () => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')})
+        () => {
+            (() => {this.sortPitchesByName()}) ();
+            (() => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')})) ()
+        }
         )
     }
 
     updateNewPitch(e){
-        this.setState({addNewPitch: {...this.state.addNewPitch, [e.target.name]: e.target.value}})
+        this.setState(
+            {
+                addNewPitch: {...this.state.addNewPitch, [e.target.name]: e.target.value}
+            }
+            )
     }
 
     changeState(e, pitch) {
@@ -286,18 +332,7 @@ class Form extends React.Component{
 
     
 
-    savePitch(e){
-        this.setState({savedPitches: [...this.state.savedPitches, this.state.addNewPitch]})
-        this.setState({addNewPitch: {
-            id: this.state.addNewPitch.id + 1,
-            pitchName: '',
-            shortCut: '',
-            subject: '',
-            pitch: ''
-        }}, () => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')}) 
-        )
-        this.toggleNewPitchForm()
-    }
+    
 
 
 
@@ -305,16 +340,36 @@ class Form extends React.Component{
         this.setState({addNewPitchForm: !this.state.addNewPitchForm})
     }
 
+
+
     render() {
         return(
-            <div>                
+            <div> 
+                <ListNames sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames={this.sortPitchesByName} />
+                <br />
+                <br />
+                <ViewHeaders
+                    state= {this.state}
+                    deletePitch = {this.deletePitch}
+                    handleSave={this.dialogBoxSave}
+                    toggleEdit = {this.toggleEdit}
+                    closeEditPitch = {this.closeEditPitch}
+                    sortedPitches={this.state.pitchesSortedByName}
+                    updatePitchBeingEdited = {this.updatePitchBeingEdited}
+                    savePitchBeingEdited = {this.savePitchBeingEdited}
+                    pitches={this.state.savedPitches} 
+                    pitchKeys={this.state.pitchNameKeys} 
+                />
+
+                <br />
+                <br />
                 <SendInmailShortCut updateState={this.updateSimpleState} currentState = {this.state.sendInmailShortCut} />
                 <br />
                 <AdvanceProfile updateState={this.updateSimpleState} currentState = {this.state.advanceProfileShortcut}/>
                 <br />
-                <CheckState currentState={this.state} />
+                <Buttons sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames = {this.sortPitchesByName} currentState={this.state} />
                 <br/>
-                
+
                 <br/>
                 <NewPitch  
                     handleOpen={this.dialogBoxOpen} 
@@ -323,22 +378,12 @@ class Form extends React.Component{
                     state={this.state.dialogBox} 
                     currentValue = {this.state.addNewPitch}
                     updateNewPitch = {this.updateNewPitch}
-                    edit = {this.changeState}
                 />
-                <br />
-                <Divider />
 
-                <div className='card-parent'>
-                    <ViewCurrentPitches2
-                        state= {this.state}
-                        deletePitch = {this.deletePitch}
-                        handleSave={this.dialogBoxSave}
-                        toggleEdit = {this.toggleEdit}
-                        closeEditPitch = {this.closeEditPitch}
-                        updatePitchBeingEdited = {this.updatePitchBeingEdited}
-                        savePitchBeingEdited = {this.savePitchBeingEdited}
-                    />
-                </div>
+                <br />
+                <br />
+                <br />
+
             </div>
         )
     }
