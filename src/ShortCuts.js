@@ -1,19 +1,35 @@
 import React from 'react';
+import TextField from 'material-ui/TextField';
 
-export function SendInmailShortCut(props) {
+const buttonSpacing = {
+  margin: 12,
+};
+
+function SendInmailShortCut(props) {
     return (
-        <div className='input-group pitch-width'>
-            <span className="input-group-addon" id="basic-addon1">Send Inmail Shortcut</span>
-            <input name= "sendInmailShortCut" value={props.currentState} onChange={props.updateState} type="text" className="form-control" placeholder="Send Inmail shortcut" aria-describedby="basic-addon1" />
-        </div>
+        <TextField helperText="Some important text" style={buttonSpacing} value={props.currentState} onChange={props.updateState} name= "sendInmailShortCut" floatingLabelText="Send Inmail Shortcut" />
     )
 }
 
-export function AdvanceProfile(props) {
+function AdvanceProfile(props) {
     return (
-        <div className='input-group pitch-width'>
-            <span className="input-group-addon" id="basic-addon1">Advance Profile Shortcut</span>
-            <input name= "advanceProfileShortcut" value={props.currentState} onChange={props.updateState} type="text" className="form-control" placeholder="Advance Profile Shortcut" aria-describedby="basic-addon1" />
+        <TextField style={buttonSpacing} name= "advanceProfileShortCut" value={props.currentState} onChange={props.updateState} floatingLabelText="Advance Profile"/>
+    )
+}
+
+function AddToGreenhouse(props) {
+    return (
+        <TextField style={buttonSpacing} name= "addToGreenhouseShortCut" value={props.currentState} onChange={props.updateState} floatingLabelText="Add to Greenhouse"/>
+    )
+}
+
+export default function ShortCuts(props) {
+    return(
+        <div id="shortcuts">
+            <SendInmailShortCut updateState={props.updateShortCuts} currentState = {props.shortCuts.sendInmailShortCut} />
+            <AdvanceProfile updateState={props.updateShortCuts} currentState = {props.shortCuts.advanceProfileShortcut}/>
+            <AddToGreenhouse updateState={props.updateShortCuts} currentState = {props.shortCuts.addToGreenhouseShortCut}/>
+            <h4 style={buttonSpacing} >Remember to add a space between shortcut letters. i.e. "shift n p" </h4><br/>
         </div>
     )
 }

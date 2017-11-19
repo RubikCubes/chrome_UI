@@ -1,3 +1,4 @@
+/* global gapi */
 
 import React from 'react';
 
@@ -8,10 +9,11 @@ import "react-toggle-switch/dist/css/switch.min.css"
 
 import Buttons from './CheckState'
 import {ViewCurrentPitches2, NewPitch, TextFieldExampleCustomize} from './ViewCurrentPitches'
-import {SendInmailShortCut, AdvanceProfile} from './ShortCuts'
+import ShortCuts from './ShortCuts'
 
 import {ListNames, ViewHeaders} from './UpdatePitchNamesTest'
 
+import Logout from './Logout';
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
@@ -19,9 +21,14 @@ import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
+import AppBar from 'material-ui/AppBar';
 
 
 import notoSansRegular from './Fonts'
+
+const buttonSpacing = {
+  margin: 12,
+};
 
 notoSansRegular()
 
@@ -41,6 +48,13 @@ class Form extends React.Component{
                 update: false
             },
             savedPitches: [],
+            
+            savedShortCuts: {
+                addToGreenhouseShortCut: '', 
+                sendInmailShortCut: '', 
+                advanceProfileShortCut: ''
+            },
+
             addNewPitchForm: false,
             pitchBeingEdited: '',
             editPitchIndex: '',
@@ -51,7 +65,8 @@ class Form extends React.Component{
             dialogBox: false,
             editPitch: false,
             pitchesSortedByName: {},
-            pitchNameKeys: []
+            pitchNameKeys: [],
+            addToGreenhouse:'',
         };
 
         this.savePitch = this.savePitch.bind(this)
@@ -72,10 +87,12 @@ class Form extends React.Component{
         this.updatePitchBeingEdited = this.updatePitchBeingEdited.bind(this)
         this.savePitchBeingEdited = this.savePitchBeingEdited.bind(this)
         this.sortPitchesByName = this.sortPitchesByName.bind(this)
-        
+        this.updateShortCuts = this.updateShortCuts.bind(this)
+        this.signOut = this.signOut.bind(this)
+        this.loadAuth = this.loadAuth.bind(this)
     }
 
-
+    
 
     sortPitchesByName() {
         var keys = []
@@ -119,6 +136,14 @@ class Form extends React.Component{
                 editPitch: true
 
             }
+        )
+    }
+
+    updateShortCuts(e){
+        this.setState({
+            savedShortCuts: {...this.state.savedShortCuts, [e.target.name]: e.target.value}
+        },
+        () => window.localStorage.setItem('shortCuts', JSON.stringify(this.state.savedShortCuts), () => {console.log('shortCuts saved')})
         )
     }
 
@@ -201,7 +226,7 @@ class Form extends React.Component{
         () => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')}) 
     }
 
-
+    
 
     updateSimpleState(e) {
         this.setState({[e.target.name]: e.target.value})
@@ -211,8 +236,39 @@ class Form extends React.Component{
         this.setState({toggleInmailSwitch: !this.state.toggleInmailSwitch})
     }
 
+    signOut() {
+        // var auth2 = gapi.auth2.getAuthInstance();
+        gapi.auth2.getAuthInstance().signOut().then(function () {
+            console.log('User signed out.');
+        });
+    }
+
+    loadAuth() {
+        console.log('this ran')
+        // var auth2 = gapi.auth2.getAuthInstance()
+        var auth2 = gapi.auth2.getAuthInstance()
+        var signedIn = auth2.isSignedIn.get()
+        console.log(signedIn)        
+        // gapi.load('auth2', function() {
+        //     gapi.auth2.init({
+        //         client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r'
+        //     }).then((auth2) => {console.log(auth2)});
+        // })
+    }
+
     componentDidMount() {
+        gapi.load('auth2', function() {
+            gapi.auth2.getAuthInstance()
+        })
+        // gapi.load('auth2')
+
         var savedPitches = JSON.parse(window.localStorage.getItem("pitches"))
+        var savedShortCuts = JSON.parse(window.localStorage.getItem("shortCuts"))
+        if (savedShortCuts) {
+            this.setState({
+                savedShortCuts: savedShortCuts
+            })
+        }
 
         var highestId
         var emptyList = []
@@ -328,26 +384,25 @@ class Form extends React.Component{
 
     }
 
-
-
-    
-
-    
-
-
-
     toggleNewPitchForm(e){
         this.setState({addNewPitchForm: !this.state.addNewPitchForm})
     }
 
 
-
     render() {
         return(
-            <div> 
-                <ListNames sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames={this.sortPitchesByName} />
-                <br />
-                <br />
+            <div>
+                <AppBar title="Options" showMenuIconButton={false} zDepth={2} iconElementRight={<Logout logout={this.signOut} />}/>
+                <br/>
+                <ShortCuts updateShortCuts = {this.updateShortCuts} shortCuts={this.state.savedShortCuts} />
+                <NewPitch
+                    handleOpen={this.dialogBoxOpen} 
+                    handleClose={this.dialogBoxClose} 
+                    handleSave={this.dialogBoxSave} 
+                    state={this.state.dialogBox} 
+                    currentValue = {this.state.addNewPitch}
+                    updateNewPitch = {this.updateNewPitch}
+                />
                 <ViewHeaders
                     state= {this.state}
                     deletePitch = {this.deletePitch}
@@ -361,28 +416,12 @@ class Form extends React.Component{
                     pitchKeys={this.state.pitchNameKeys} 
                 />
 
-                <br />
-                <br />
-                <SendInmailShortCut updateState={this.updateSimpleState} currentState = {this.state.sendInmailShortCut} />
-                <br />
-                <AdvanceProfile updateState={this.updateSimpleState} currentState = {this.state.advanceProfileShortcut}/>
-                <br />
+                
+                
                 <Buttons sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames = {this.sortPitchesByName} currentState={this.state} />
-                <br/>
-
-                <br/>
-                <NewPitch  
-                    handleOpen={this.dialogBoxOpen} 
-                    handleClose={this.dialogBoxClose} 
-                    handleSave={this.dialogBoxSave} 
-                    state={this.state.dialogBox} 
-                    currentValue = {this.state.addNewPitch}
-                    updateNewPitch = {this.updateNewPitch}
-                />
-
-                <br />
-                <br />
-                <br />
+                {/*<ListNames sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames={this.sortPitchesByName} />*/}
+                <a style={buttonSpacing} href="#" onClick={this.loadAuth}>load auth</a>
+                <a style={buttonSpacing} href="#" onClick={this.signOut}>Sign out</a>
 
             </div>
         )

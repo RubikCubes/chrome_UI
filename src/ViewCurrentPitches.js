@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button } from 'react-bootstrap'
+// import { Button } from 'react-bootstrap'
 
 import './App.css'
 
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+// import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -18,6 +18,11 @@ const customContentStyle = {
     left: '10%'
 
 };
+
+const style = {
+  margin: 12,
+};
+
 
 // var parentStyle = {
 //     position: 'sticky'
@@ -52,7 +57,7 @@ export function NewPitch (props) {
 
     return (
         <div>
-            <RaisedButton label="Add New Pitch" onClick={props.handleOpen} />
+            <RaisedButton label="Add New Pitch" style={style} onClick={props.handleOpen} />
             <Dialog
                 className="dialogBox"
                 title="Add New Pitch"

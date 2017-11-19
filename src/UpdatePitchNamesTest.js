@@ -50,8 +50,8 @@ export function ViewHeaders(props){
     return (
         props.pitchKeys.map((pitchKey, index) => {
             return (
-                <div>
-                    <h1> {pitchKey} </h1>
+                <div key={index}>
+                    <h1 style={buttonSpacing}> {pitchKey} </h1>
                     <div className='card-parent'>
                         <ViewPitches key={index} props ={props} pitches={props.pitches} keyID={pitchKey}/>
                     </div>
@@ -63,13 +63,13 @@ export function ViewHeaders(props){
 
 
 function ViewPitches(props) {
-    // console.log(props.props.state.editPitch)
+    
     return(
         props.pitches.map((pitch, index) => {
             if (pitch.pitchName == props.keyID) {
                 return (
-                    <div>
-                        <ViewCurrentPitch key={index}
+                    <div key={index}>
+                        <ViewCurrentPitch
                             pitch={pitch}
                             editPitch={props.props.state.editPitch}
                             deletePitch= {props.props.deletePitch}
