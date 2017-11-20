@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+    <head>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="google-signin-client_id" content="817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="google-signin-client_id" content="817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
+        <meta name="google-signin-scope" content="profile email">
 
-    
-    <meta name="google-signin-scope" content="profile email">
+        <script>
+            function start() {
+                gapi.load('auth2', function() {
+                    auth2 = gapi.auth2.init({
+                        client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com',
+                        scope: 'profile email'
+                    });
+                });
+            }
+        </script>
 
     <!-- <meta name="theme-color" content="#000000">     -->
     <!-- <link rel="manifest" href="%PUBLIC_URL%/manifest.json"> -->

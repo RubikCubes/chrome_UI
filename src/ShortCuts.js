@@ -6,12 +6,14 @@ const buttonSpacing = {
 };
 
 function SendInmailShortCut(props) {
+    // console.log(props)
     return (
-        <TextField helperText="Some important text" style={buttonSpacing} value={props.currentState} onChange={props.updateState} name= "sendInmailShortCut" floatingLabelText="Send Inmail Shortcut" />
+        <TextField style={buttonSpacing} name= "sendInmailShortCut" value={props.currentState} onChange={props.updateState}  floatingLabelText="Send Inmail Shortcut" />
     )
 }
 
 function AdvanceProfile(props) {
+    // console.log(props)
     return (
         <TextField style={buttonSpacing} name= "advanceProfileShortCut" value={props.currentState} onChange={props.updateState} floatingLabelText="Advance Profile"/>
     )

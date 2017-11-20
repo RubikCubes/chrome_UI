@@ -50,9 +50,9 @@ class Form extends React.Component{
             savedPitches: [],
             
             savedShortCuts: {
-                addToGreenhouseShortCut: '', 
-                sendInmailShortCut: '', 
-                advanceProfileShortCut: ''
+                addToGreenhouseShortCut: 'a t g', 
+                sendInmailShortCut: '1 a', 
+                advanceProfileShortCut: 'shift n p'
             },
 
             addNewPitchForm: false,
@@ -89,7 +89,6 @@ class Form extends React.Component{
         this.sortPitchesByName = this.sortPitchesByName.bind(this)
         this.updateShortCuts = this.updateShortCuts.bind(this)
         this.signOut = this.signOut.bind(this)
-        this.loadAuth = this.loadAuth.bind(this)
     }
 
     
@@ -237,30 +236,47 @@ class Form extends React.Component{
     }
 
     signOut() {
-        // var auth2 = gapi.auth2.getAuthInstance();
-        gapi.auth2.getAuthInstance().signOut().then(function () {
-            console.log('User signed out.');
-        });
+        var appStart = function() {
+            gapi.load('auth2', signOut2)
+        }
+
+        var signOut2 = function() {
+            var auth2 = gapi.auth2.init({
+                client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com',
+                scope: 'profile email'
+            })
+            .then((auth2) => {
+                var googleUser = auth2.signOut()
+            })
+        }
+
+        appStart();
     }
 
-    loadAuth() {
-        console.log('this ran')
-        // var auth2 = gapi.auth2.getAuthInstance()
-        var auth2 = gapi.auth2.getAuthInstance()
-        var signedIn = auth2.isSignedIn.get()
-        console.log(signedIn)        
-        // gapi.load('auth2', function() {
-        //     gapi.auth2.init({
-        //         client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r'
-        //     }).then((auth2) => {console.log(auth2)});
-        // })
-    }
 
     componentDidMount() {
-        gapi.load('auth2', function() {
-            gapi.auth2.getAuthInstance()
-        })
-        // gapi.load('auth2')
+        console.log('starting')
+        var auth2;
+        var googleUser;
+
+        var appStart = function() {
+            gapi.load('auth2', initSigninV2);
+        }
+
+        var initSigninV2 = function() {
+            auth2 = gapi.auth2.init({
+                client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com',
+                scope: 'profile email'
+            })
+            .then((auth2) => {
+                googleUser = auth2.currentUser.get()
+                console.log(googleUser)
+            })
+        }
+
+        appStart();
+
+
 
         var savedPitches = JSON.parse(window.localStorage.getItem("pitches"))
         var savedShortCuts = JSON.parse(window.localStorage.getItem("shortCuts"))
@@ -420,7 +436,6 @@ class Form extends React.Component{
                 
                 <Buttons sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames = {this.sortPitchesByName} currentState={this.state} />
                 {/*<ListNames sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames={this.sortPitchesByName} />*/}
-                <a style={buttonSpacing} href="#" onClick={this.loadAuth}>load auth</a>
                 <a style={buttonSpacing} href="#" onClick={this.signOut}>Sign out</a>
 
             </div>

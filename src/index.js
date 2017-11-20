@@ -14,6 +14,7 @@ const App = () => (
         <Router>
             <div>
                 <Route path="/login" component={SignIn2} />
+                <Route path="/options" component={Form} />
             </div>
         </Router>
     </MuiThemeProvider>
@@ -26,5 +27,5 @@ registerServiceWorker();
 
 
 
-//<Route path="/options" component={Form} />
+
 // <Route path="/home_page" component={SignIn} />
