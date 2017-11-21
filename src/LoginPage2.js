@@ -7,7 +7,7 @@ import AppBar from 'material-ui/AppBar';
 import $ from 'jquery'
 
 
-class SignIn2 extends React.Component{
+class Login extends React.Component{
     constructor(props) {
         super(props)
         this.handleSignIn = this.handleSignIn.bind(this)
@@ -51,24 +51,9 @@ class SignIn2 extends React.Component{
         }
     }
 
-    // handleSignIn() {
-    //     gapi.load('auth2', () => {
-    //         gapi.auth2.init({
-    //             client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r'
-    //         }).then((auth2) => {
-    //             var authResult = auth2.grantOfflineAccess().then(this.signInCallback)
-    //             console.log(authResult)
-    //         })
-    //     })
-    // }
-
     handleSignIn() {
-        // console.log(gapi.auth2)
-        var GoogleAuth = gapi.auth2.getAuthInstance()
-        GoogleAuth.grantOfflineAccess().then(this.signInCallback)
-
+        var x = gapi.auth2.getAuthInstance().grantOfflineAccess()
     }
-
 
     render() {
         return(
@@ -79,6 +64,51 @@ class SignIn2 extends React.Component{
             </div>
         )
     }
+}
+
+class SignIn2 extends React.Component{
+
+    constructor(props){
+        super(props);
+        this.updateRedirect = this.updateRedirect.bind(this)
+        this.state = {
+            redirect: false,
+            loaded: false
+        }
+    }
+
+    updateRedirect() {
+        this.setState({
+            redirect: true
+        })
+    }
+
+    componentDidMount() {
+        gapi.load('auth2', () => {
+            gapi.auth2.init({
+                client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r'
+            }).then((auth2) => {
+                console.log( "signed in: " + auth2.isSignedIn.get())
+                this.setState({
+                    redirect: auth2.isSignedIn.get(),
+                    loaded: true
+                }, () => {console.log('this finished')})
+            })
+        })
+    }
+
+    render() {
+        if (!this.state.loaded){
+            console.log(this.state.loaded)
+            return null
+        }
+
+        console.log(this.state.loaded)
+        return (
+            this.state.redirect ?
+            <Redirect to='/options' /> : <Login updateRedirect = {this.updateRedirect} />
+        )
+    }    
 }
 
 export default SignIn2
