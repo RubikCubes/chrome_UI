@@ -7,28 +7,16 @@
         <meta name="google-signin-client_id" content= "817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com">
         
         <meta name="google-signin-scope" content="profile email">
-        <script src="https://apis.google.com/js/client:platform.js?onload=start"></script>
-        <script>
-            function start() {
-                console.log('script running')
-                gapi.load('auth2', function() {
-                    auth2 = gapi.auth2.init({
-                        client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com',
-                        scope: 'profile email'
-                    });
-                });
-            }
-        </script>
+        <!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
+        <script src="https://apis.google.com/js/platform.js"></script>
 
-    <!-- <meta name="theme-color" content="#000000">     -->
-    <!-- <link rel="manifest" href="%PUBLIC_URL%/manifest.json"> -->
-    <!-- <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico"> -->
+        <!-- <meta name="theme-color" content="#000000">     -->
+        <!-- <link rel="manifest" href="%PUBLIC_URL%/manifest.json"> -->
+        <!-- <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico"> -->
 
-    <title>React App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-
-    
-  </body>
+        <title>React App</title>
+    </head>
+    <body>
+        <div id="root"></div>
+    </body>
 </html>

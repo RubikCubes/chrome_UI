@@ -6,6 +6,7 @@ import { Redirect } from 'react-router';
 import AppBar from 'material-ui/AppBar';
 import $ from 'jquery'
 
+import loadScript from './loadScript'
 
 class Login extends React.Component{
     constructor(props) {
@@ -13,16 +14,6 @@ class Login extends React.Component{
         this.handleSignIn = this.handleSignIn.bind(this)
         this.signInCallback = this.signInCallback.bind(this)
     }
-
-    // componentDidMount() {
-    //     gapi.signin2.render('my-signin2', {
-    //         'scope': 'profile email',
-    //         'width': 300,
-    //         'height': 50,
-    //         'longtitle': true,
-    //         'theme': 'dark',
-    //     });
-    // }
 
     signInCallback(authResult) {
         console.log('this worked')
@@ -51,8 +42,22 @@ class Login extends React.Component{
         }
     }
 
-    handleSignIn() {
-        var x = gapi.auth2.getAuthInstance().grantOfflineAccess()
+    handleSignIn(props) {
+        // var x = gapi.auth2.getAuthInstance().grantOfflineAccess()
+        var GoogleAuth = gapi.auth2.getAuthInstance()
+        GoogleAuth.signIn({scope:'profile email'})
+        .then((response) => {
+            var googleUser = GoogleAuth.currentUser.get()
+            var token = googleUser.getAuthResponse().id_token
+            console.log(token)
+            // var auth_code = response.code
+            console.log(response)
+            console.log('updating redirect')
+            var signedIn = gapi.auth2.getAuthInstance().isSignedIn.get()
+            console.log('Is a user signed in?: '+signedIn)
+            this.props.updateRedirect()
+        })
+        
     }
 
     render() {
@@ -73,8 +78,11 @@ class SignIn2 extends React.Component{
         this.updateRedirect = this.updateRedirect.bind(this)
         this.state = {
             redirect: false,
-            loaded: false
+            loaded: false,
+            gapiLoaded: false,
+            apiLoaded: false,
         }
+
     }
 
     updateRedirect() {
@@ -84,26 +92,39 @@ class SignIn2 extends React.Component{
     }
 
     componentDidMount() {
+        console.log('component did mount')
         gapi.load('auth2', () => {
-            gapi.auth2.init({
-                client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r'
-            }).then((auth2) => {
-                console.log( "signed in: " + auth2.isSignedIn.get())
-                this.setState({
-                    redirect: auth2.isSignedIn.get(),
-                    loaded: true
-                }, () => {console.log('this finished')})
+            var auth2 = gapi.auth2.init({
+                client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com',
+                scope: 'profile email',
+            
             })
-        })
+            .then((auth2) => {
+                if (auth2.isSignedIn.get()) {
+                    this.setState({
+                        redirect:true,
+                        gapiLoaded:true
+                    })
+                } else {
+                    console.log( "signed in: " + auth2.isSignedIn.get())
+                    this.setState({
+                        gapiLoaded: true
+                    },
+                    () => {console.log('state set')})    
+                }
+                
+            });
+        });
     }
 
     render() {
-        if (!this.state.loaded){
-            console.log(this.state.loaded)
-            return null
+        if (!this.state.gapiLoaded){
+            return null    
         }
 
-        console.log(this.state.loaded)
+        console.log('redirect')
+        console.log(this.state.redirect)
+
         return (
             this.state.redirect ?
             <Redirect to='/options' /> : <Login updateRedirect = {this.updateRedirect} />

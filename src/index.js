@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Form from './App';
+import Options from './App';
 import SignIn from './LoginPage'
 import SignIn2 from './LoginPage2'
 import registerServiceWorker from './registerServiceWorker';
@@ -14,7 +14,7 @@ const App = () => (
         <Router>
             <div>
                 <Route path="/login" component={SignIn2} />
-                <Route path="/options" component={Form} />
+                <Route path="/options" component={Options} />
             </div>
         </Router>
     </MuiThemeProvider>

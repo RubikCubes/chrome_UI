@@ -24,7 +24,12 @@ import RaisedButton from 'material-ui/RaisedButton';
 import AppBar from 'material-ui/AppBar';
 
 
+import SignIn2 from './LoginPage2'
+
 import notoSansRegular from './Fonts'
+
+import { Redirect } from 'react-router'
+
 
 const buttonSpacing = {
   margin: 12,
@@ -33,7 +38,7 @@ const buttonSpacing = {
 notoSansRegular()
 
 
-class Form extends React.Component{
+class OptionsForm extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -246,39 +251,21 @@ class Form extends React.Component{
 
     signOut() {
         var x = gapi.auth2.getAuthInstance()
-        var y = x.currentUser.get()
-        console.log(y)
         x.signOut()
-        var z = x.currentUser.get()
-        console.log(z)
+            .then((signOut) => {
+                console.log(x.isSignedIn.get())
+                console.log('signed out')
+                this.props.updateLoggedIn()
+                }
+            )
+        
+        
+        
+
     }
 
 
     componentDidMount() {    
-        // gapi.auth2.getAuthInstance()
-        // gapi.load('auth2', () => {
-        //     gapi.auth2.init({
-        //         client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r'
-        //     }).then((auth2) => {
-        //         console.log( "signed in: " + auth2.isSignedIn.get())
-        //         this.setState({
-        //             redirect: auth2.isSignedIn.get(),
-        //             loaded: true
-        //         }, () => {console.log('this finished')})
-        //     })
-        // })
-
-        gapi.load('auth2', () => {
-            var googleAuth = gapi.auth2.getAuthInstance()
-            console.log(googleAuth)
-            // console.log( "signed in: " + googleAuth.isSignedIn.get())
-        })
-
-        
-        
-
-        
-
         var savedPitches = JSON.parse(window.localStorage.getItem("pitches"))
         var savedShortCuts = JSON.parse(window.localStorage.getItem("shortCuts"))
         if (savedShortCuts) {
@@ -444,4 +431,93 @@ class Form extends React.Component{
     }
 }
 
-export default Form;
+class OptionsPage extends React.Component{
+
+    constructor(props){
+        super(props);
+        this.updateRedirect = this.updateRedirect.bind(this)
+        this.state = {
+            isSignedIn: false,
+            loaded: false,
+            gapiLoaded: false,
+            redirect: false,
+        }
+    }
+
+    updateRedirect() {
+        console.log('redirect run')
+        this.setState({
+            redirect: true
+        })
+    }
+
+    componentDidMount() {
+        var signedIn = gapi.auth2.getAuthInstance().isSignedIn.get()
+        console.log('Is a user signed in?: '+signedIn)
+
+        if (signedIn) {
+            console.log('signed in?')
+            this.setState({
+                isSignedIn: true,
+                gapiLoaded: true
+            })
+        } else {
+            console.log('not signed in')
+            this.setState({
+                gapiLoaded: true
+            },
+            () => {console.log('state set')}
+            )
+        }
+
+        // gapi.load('auth2', () => {
+        //     var auth2 = gapi.auth2.init({
+        //         client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com',
+        //         scope: 'profile email',
+            
+        //     })
+        //     .then((auth2) => {
+        //         console.log('checking if signed in '+ auth2.isSignedIn.get())
+
+        //         if (auth2.isSignedIn.get()) {
+        //             console.log('signing in')
+        //             this.setState({
+        //                 isSignedIn: true,
+        //                 gapiLoaded:true
+        //             })
+        //         } else {
+        //             this.setState({
+        //                 gapiLoaded: true
+
+        //             },
+        //             () => {console.log('state set')})    
+        //         }
+                
+        //     });
+        // });
+    }
+
+    render() {
+        if (!this.state.gapiLoaded){
+            return null
+        }
+
+        console.log(this.state.isSignedIn)
+        console.log(this.state.redirect)
+
+        if (this.state.redirect) {
+            console.log('redirect')
+            return(
+                <Redirect to="/login" />
+            )
+        }
+
+        return (
+            this.state.isSignedIn ?
+            <OptionsForm updateLoggedIn = {this.updateRedirect} /> : <Redirect to='/login' />
+        )
+    }    
+}
+
+
+export default OptionsPage;
