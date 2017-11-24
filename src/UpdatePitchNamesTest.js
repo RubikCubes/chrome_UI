@@ -48,13 +48,13 @@ export function ListNames(props){
 
 export function ViewHeaders(props){
     return (
-        props.pitchKeys.map((pitchKey, index) => {
-            console.log(pitchKey)
+        props.pitchKeys.map((pitchGroupName, index) => {
+            console.log(pitchGroupName)
             return (
                 <div key={index}>
-                    <h1 style={buttonSpacing}> {pitchKey} </h1>
+                    <h1 style={buttonSpacing}> {pitchGroupName} </h1>
                     <div className='card-parent'>
-                        <ViewPitches key={index} props ={props} pitches={props.pitches} keyID={pitchKey}/>
+                        <ViewPitches key={index} props ={props} pitches={props.pitches} pitchGroupName={pitchGroupName}/>
                     </div>
                 </div>
             )
@@ -67,7 +67,8 @@ function ViewPitches(props) {
     
     return(
         props.pitches.map((pitch, index) => {
-            if (pitch.pitchName == props.keyID) {
+            console.log(pitch)
+            if (pitch.groupName == props.pitchGroupName) {
                 return (
                     <div key={index}>
                         <ViewCurrentPitch

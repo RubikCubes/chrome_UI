@@ -16,8 +16,6 @@ class Login extends React.Component{
     }
 
     signInCallback(token) {
-        
-        
         if (token) {
             // Hide the sign-in button now that the user is authorized, for example:
             // $('#signinButton').attr('style', 'display: none');
@@ -43,30 +41,29 @@ class Login extends React.Component{
     }
 
     handleSignIn(props) {
-        // var x = gapi.auth2.getAuthInstance().grantOfflineAccess()
         var GoogleAuth = gapi.auth2.getAuthInstance()
         GoogleAuth.signIn({scope:'profile email'})
-        .then((response) => {
-            var googleUser = GoogleAuth.currentUser.get()
-            var token = googleUser.getAuthResponse().id_token
-            this.signInCallback(token)
-            
-            
-            
+        .then((response) => {            
             // console.log('updating redirect')
-            var signedIn = gapi.auth2.getAuthInstance().isSignedIn.get()
-            // console.log('Is a user signed in?: '+signedIn)
             this.props.updateRedirect()
         })
-        
+    }
+
+    componentDidMount() {
+        gapi.signin2.render('my-signin2', {
+            'scope': 'profile email',
+            'width': 240,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'dark',
+        });
     }
 
     render() {
         return(
             <div>
                 <AppBar className='appBar' title="Pliny" showMenuIconButton={false} zDepth={2} />
-                <button  id="signinButton" onClick={this.handleSignIn} >Sign in with Google</button>
-                
+                <div id="my-signin2" onClick={this.handleSignIn} data-width="300" data-height="200" data-longtitle="true"></div>
             </div>
         )
     }

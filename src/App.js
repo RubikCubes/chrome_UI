@@ -71,8 +71,8 @@ class OptionsForm extends React.Component{
             // advanceProfileShortcut: '',
             dialogBox: false,
             editPitch: false,
-            pitchesSortedByName: {},
-            pitchNameKeys: [],
+            pitchesSortedByGroup: {},
+            pitchGroupKeys: [],
             addToGreenhouse:'',
             redirect: false,
             gapiLoaded: false
@@ -95,7 +95,7 @@ class OptionsForm extends React.Component{
         this.closeEditPitch = this.closeEditPitch.bind(this)
         this.updatePitchBeingEdited = this.updatePitchBeingEdited.bind(this)
         this.savePitchBeingEdited = this.savePitchBeingEdited.bind(this)
-        this.sortPitchesByName = this.sortPitchesByName.bind(this)
+        this.sortPitchesByGroup = this.sortPitchesByGroup.bind(this)
         this.updateShortCuts = this.updateShortCuts.bind(this)
         this.signOut = this.signOut.bind(this)
         this.checkUserData = this.checkUserData.bind(this)
@@ -137,17 +137,18 @@ class OptionsForm extends React.Component{
         console.log(user)
     }
 
-    sortPitchesByName() {
+    sortPitchesByGroup() {
         var keys = []
 
         var data = {}
 
         this.state.savedPitches.map((pitch, index) => {
-            if (keys.indexOf(pitch.pitchName) != -1) {
-                data[pitch.pitchName].push(pitch)
+            // console.log(pitch)
+            if (keys.indexOf(pitch.groupName) != -1) {
+                data[pitch.groupName].push(pitch)
             } else {
-                keys.push(pitch.pitchName)
-                data[pitch.pitchName] = [pitch]
+                keys.push(pitch.groupName)
+                data[pitch.groupName] = [pitch]
             }
         })
 
@@ -155,8 +156,8 @@ class OptionsForm extends React.Component{
         // console.log(data)
 
         this.setState({
-            pitchesSortedByName: data,
-            pitchNameKeys: keys
+            pitchesSortedByGroup: data,
+            pitchGroupKeys: keys
         })
     }
 
@@ -210,7 +211,7 @@ class OptionsForm extends React.Component{
             editPitch: false
         },
         () => {
-            (() => {this.sortPitchesByName()}) ();
+            (() => {this.sortPitchesByGroup()}) ();
             (() => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')})) ()
         }
         )
@@ -258,7 +259,7 @@ class OptionsForm extends React.Component{
             pitch: ''
         }},
         () => {
-            (() => {this.sortPitchesByName()}) ();
+            (() => {this.sortPitchesByGroup()}) ();
             (() => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')})) ()
         }
         )
@@ -314,7 +315,7 @@ class OptionsForm extends React.Component{
             this.setState({
                 savedPitches: savedPitches,
                 addNewPitch: {...this.state.addNewPitch, id: highestId + 1}
-            }, () => {this.sortPitchesByName()}
+            }, () => {this.sortPitchesByGroup()}
             )   
         }
 
@@ -369,7 +370,7 @@ class OptionsForm extends React.Component{
             savedPitches: newState
         },
         () => {
-            (() => {this.sortPitchesByName()}) ();
+            (() => {this.sortPitchesByGroup()}) ();
             (() => window.localStorage.setItem('pitches', JSON.stringify(this.state.savedPitches), () => {console.log('message saved')})) ()
         }
         )
@@ -443,17 +444,17 @@ class OptionsForm extends React.Component{
                     handleSave={this.dialogBoxSave}
                     toggleEdit = {this.toggleEdit}
                     closeEditPitch = {this.closeEditPitch}
-                    sortedPitches={this.state.pitchesSortedByName}
+                    sortedPitches={this.state.pitchesSortedByGroup}
                     updatePitchBeingEdited = {this.updatePitchBeingEdited}
                     savePitchBeingEdited = {this.savePitchBeingEdited}
                     pitches={this.state.savedPitches} 
-                    pitchKeys={this.state.pitchNameKeys} 
+                    pitchKeys={this.state.pitchGroupKeys} 
                 />
 
                 
                 
-                {/*<Buttons sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames = {this.sortPitchesByName} currentState={this.state} />*/}
-                {/*<ListNames sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames={this.sortPitchesByName} />*/}
+                {/*<Buttons sortedPitches={this.state.pitchesSortedByGroup} updateListOfPitchNames = {this.sortPitchesByGroup} currentState={this.state} />*/}
+                {/*<ListNames sortedPitches={this.state.pitchesSortedByGroup} updateListOfPitchNames={this.sortPitchesByGroup} />*/}
                 {/*<button style={buttonSpacing} onClick={this.checkUserData}>User Data</button>*/}
                 {/*<a style={buttonSpacing} onClick={this.addToGreenhouse}> Add To Greenhouse </a>*/}
 

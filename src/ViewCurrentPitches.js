@@ -23,23 +23,6 @@ const style = {
   margin: 12,
 };
 
-
-// var parentStyle = {
-//     position: 'sticky'
-// }
-
-// var leftButton = {
-//     position: 'absolute',
-//     bottom: '10%',
-//     left: '5%'
-// }
-
-// var rightButton = {
-//     position: 'absolute',
-//     bottom: '10%',
-//     right: '5%'
-// }
-
 export function NewPitch (props) {
     const actions = [
         <FlatButton
@@ -95,99 +78,6 @@ export const TextFieldExampleCustomize = (props) => {
     ) 
 }
 
-// export function ViewCurrentPitches2(props) {
-//     const actions = [
-//         <FlatButton
-//         label="Cancel"
-//         primary={true}
-//         onClick={props.closeEditPitch}
-//       />,
-//       <FlatButton
-//         label="Save"
-//         primary={true}
-//         keyboardFocused={true}
-//         onClick={props.savePitchBeingEdited}
-//       />,
-
-//     ];
-    
-//     return (
-//         props.state.savedPitches.map((pitch, i) => {
-//             return(
-//                 <Card key={pitch.id} className = 'form-margin card-width' zDepth={3}>
-//                     <CardText>{pitch.subject} </CardText>
-//                     <CardText className='card'>{pitch.pitch}</CardText>
-//                     <CardActions className= 'this-is-a-test'>
-//                         <FlatButton label="Edit" onClick={(e) => {props.toggleEdit(e, pitch); console.log(props.state.pitchBeingEdited)}}/>
-//                             <Dialog
-//                                 className="dialogBox"
-//                                 title="Test"
-//                                 modal={false}
-//                                 actions={actions}
-//                                 open={props.state.editPitch}
-//                                 contentStyle={customContentStyle}
-//                                 autoScrollBodyContent={true}
-//                             >
-//                                 <TextFieldExampleCustomize currentValue = {props.state.pitchBeingEdited} updateNewPitch = {props.updatePitchBeingEdited} />
-//                             </Dialog>
-
-//                         <FlatButton label="Delete" onClick={(e) => {props.deletePitch(e, pitch)}} />
-//                     </CardActions>
-//                 </Card>
-//             )
-            
-//         })
-//     )
-// }
-
-// export function ViewCurrentPitch(props){
-//     const actions = [
-//         <FlatButton
-//         label="Cancel"
-//         primary={true}
-//         onClick={props.closeEditPitch}
-//       />,
-//       <FlatButton
-//         label="Save"
-//         primary={true}
-//         keyboardFocused={true}
-//         onClick={props.savePitchBeingEdited}
-//       />,
-//     ];
-
-//     console.log(props)
-//     return (
-//         <Card key={props.pitch.id} className = 'form-margin card-width' zDepth={3}>
-//             <CardText>{props.pitch.subject} </CardText>
-//             <CardText className='card'>{props.pitch.pitch}</CardText>
-//             <CardActions className= 'this-is-a-test'>
-//                 <FlatButton label="Edit" onClick={(e) => {props.toggleEdit(e, props.pitch)}}/>
-//                 <FlatButton label="Delete" onClick={(e) => {props.deletePitch(e, props.pitch)}} />
-//             </CardActions>
-//         </Card>
-//     )
-// }
-
-// <ViewDialogBox pitchBeingEdited={props.pitchBeingEdited} actions={actions} toggleEdit={props.toggleEdit} savePitchBeingEdited={props.savePitchBeingEdited} />
-
-
-// function ViewDialogBox(props) {
-//     // console.log(props)
-//     return (
-//         <Dialog
-//             className="dialogBox"
-//             title="Test"
-//             modal={false}
-//             actions={props.actions}
-//             open={props.toggleEdit}
-//             contentStyle={customContentStyle}
-//             autoScrollBodyContent={true}
-//         >
-//             <TextFieldExampleCustomize currentValue = {props.pitchBeingEdited} updateNewPitch = {props.updatePitchBeingEdited} />
-//         </Dialog>
-//     )
-
-// }
 
 
 
