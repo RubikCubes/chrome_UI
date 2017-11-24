@@ -30,6 +30,8 @@ import notoSansRegular from './Fonts'
 
 import { Redirect } from 'react-router'
 
+import $ from 'jquery'
+
 
 const buttonSpacing = {
   margin: 12,
@@ -65,8 +67,8 @@ class OptionsForm extends React.Component{
             editPitchIndex: '',
             lockUpdate: false,
             toggleInmailSwitch: false,
-            sendInmailShortCut: '',
-            advanceProfileShortcut: '',
+            // sendInmailShortCut: '',
+            // advanceProfileShortcut: '',
             dialogBox: false,
             editPitch: false,
             pitchesSortedByName: {},
@@ -97,6 +99,34 @@ class OptionsForm extends React.Component{
         this.updateShortCuts = this.updateShortCuts.bind(this)
         this.signOut = this.signOut.bind(this)
         this.checkUserData = this.checkUserData.bind(this)
+        this.addToGreenhouse = this.addToGreenhouse.bind(this)
+    }
+
+    addToGreenhouse(){
+        var googleAuth = gapi.auth2.getAuthInstance()
+        var currentUser = googleAuth.currentUser.get()
+        var currentEmail = currentUser.getBasicProfile().getEmail()
+
+        var token = currentUser.getAuthResponse().id_token
+
+        // console.log(currentEmail)s
+        
+        
+        $.ajax({
+                type: 'POST',
+                url: 'http://127.0.0.1:5000/atg2',
+                // Always include an `X-Requested-With` header in every AJAX request,
+                // to protect against CSRF attacks.
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                contentType: 'application/json',
+                success: function(result) {
+                    // Handle or verify the server response.
+                },
+                processData: false,
+                data: JSON.stringify(token)
+            });
     }
 
     
@@ -422,9 +452,10 @@ class OptionsForm extends React.Component{
 
                 
                 
-                <Buttons sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames = {this.sortPitchesByName} currentState={this.state} />
+                {/*<Buttons sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames = {this.sortPitchesByName} currentState={this.state} />*/}
                 {/*<ListNames sortedPitches={this.state.pitchesSortedByName} updateListOfPitchNames={this.sortPitchesByName} />*/}
-                <a style={buttonSpacing} href="#" onClick={this.checkUserData}>User Data</a>
+                {/*<button style={buttonSpacing} onClick={this.checkUserData}>User Data</button>*/}
+                {/*<a style={buttonSpacing} onClick={this.addToGreenhouse}> Add To Greenhouse </a>*/}
 
             </div>
         )
@@ -441,7 +472,11 @@ class OptionsPage extends React.Component{
             loaded: false,
             gapiLoaded: false,
             redirect: false,
+            gapiLoaded2: true,
+            test: false,
         }
+        // this.loadGapi = this.loadGapi.bind(this)
+        this.signIn = this.signIn.bind(this)
     }
 
     updateRedirect() {
@@ -452,8 +487,27 @@ class OptionsPage extends React.Component{
     }
 
     componentDidMount() {
+        console.log('loading gapi')
+        gapi.load('auth2', () => {
+            var auth2 = gapi.auth2.init({
+                client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com',
+                scope: 'profile email',
+            })
+            .then((auth2) => {
+                this.setState({
+                    gapiLoaded:true,
+                    isSignedIn: auth2.isSignedIn.get()
+                })
+                // var signedIn = auth2.isSignedIn.get()
+            });
+        });
+    }
+
+
+    signIn(){
+        
         var signedIn = gapi.auth2.getAuthInstance().isSignedIn.get()
-        console.log('Is a user signed in?: '+signedIn)
+        
 
         if (signedIn) {
             console.log('signed in?')
@@ -469,36 +523,14 @@ class OptionsPage extends React.Component{
             () => {console.log('state set')}
             )
         }
-
-        // gapi.load('auth2', () => {
-        //     var auth2 = gapi.auth2.init({
-        //         client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com',
-        //         scope: 'profile email',
-            
-        //     })
-        //     .then((auth2) => {
-        //         console.log('checking if signed in '+ auth2.isSignedIn.get())
-
-        //         if (auth2.isSignedIn.get()) {
-        //             console.log('signing in')
-        //             this.setState({
-        //                 isSignedIn: true,
-        //                 gapiLoaded:true
-        //             })
-        //         } else {
-        //             this.setState({
-        //                 gapiLoaded: true
-
-        //             },
-        //             () => {console.log('state set')})    
-        //         }
-                
-        //     });
-        // });
     }
 
     render() {
+        // if (this.state.test){
+        //     this.signIn()
+        // }
         if (!this.state.gapiLoaded){
+            console.log('this ran ')
             return null
         }
 

@@ -77,8 +77,8 @@ export function NewPitch (props) {
 export const TextFieldExampleCustomize = (props) => {
     return (
         <div>
-            <TextField floatingLabelText="Linkedin Project Name" name="projectName" value={props.currentValue.projectName} onChange = {props.updateNewPitch} /> <div/>
-            <TextField floatingLabelText="Group Name" name="groupName" value={props.currentValue.groupName} onChange = {props.updateNewPitch} /> <div/>
+            <TextField style={style} floatingLabelText="Linkedin Project Name" name="projectName" value={props.currentValue.projectName} onChange = {props.updateNewPitch} />
+            <TextField style={style} floatingLabelText="Group Name" name="groupName" value={props.currentValue.groupName} onChange = {props.updateNewPitch} />
             <TextField floatingLabelText="Pitch Name" name="pitchName" value={props.currentValue.pitchName} onChange = {props.updateNewPitch} /> <div/>
             <TextField floatingLabelText="Shortcut" name="shortCut" value={props.currentValue.shortCut} onChange = {props.updateNewPitch} /> <div/>
             <TextField floatingLabelText="Subject" name="subject" value={props.currentValue.subject} onChange = {props.updateNewPitch} /> <div/>

@@ -49,6 +49,7 @@ export function ListNames(props){
 export function ViewHeaders(props){
     return (
         props.pitchKeys.map((pitchKey, index) => {
+            console.log(pitchKey)
             return (
                 <div key={index}>
                     <h1 style={buttonSpacing}> {pitchKey} </h1>

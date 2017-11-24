@@ -26,10 +26,11 @@ function AddToGreenhouse(props) {
 }
 
 export default function ShortCuts(props) {
+    // console.log(props.shortCuts)
     return(
         <div id="shortcuts">
             <SendInmailShortCut updateState={props.updateShortCuts} currentState = {props.shortCuts.sendInmailShortCut} />
-            <AdvanceProfile updateState={props.updateShortCuts} currentState = {props.shortCuts.advanceProfileShortcut}/>
+            <AdvanceProfile updateState={props.updateShortCuts} currentState = {props.shortCuts.advanceProfileShortCut}/>
             <AddToGreenhouse updateState={props.updateShortCuts} currentState = {props.shortCuts.addToGreenhouseShortCut}/>
             <h4 style={buttonSpacing} >Remember to add a space between shortcut letters. i.e. "shift n p" </h4><br/>
         </div>

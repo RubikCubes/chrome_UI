@@ -15,10 +15,10 @@ class Login extends React.Component{
         this.signInCallback = this.signInCallback.bind(this)
     }
 
-    signInCallback(authResult) {
-        console.log('this worked')
-        console.log(authResult['code'])
-        if (authResult['code']) {
+    signInCallback(token) {
+        
+        
+        if (token) {
             // Hide the sign-in button now that the user is authorized, for example:
             // $('#signinButton').attr('style', 'display: none');
             // Send the code to the server
@@ -35,7 +35,7 @@ class Login extends React.Component{
                     // Handle or verify the server response.
                 },
                 processData: false,
-                data: JSON.stringify(authResult['code'])
+                data: JSON.stringify(token)
             });
         } else {
             // There was an error.
@@ -49,12 +49,13 @@ class Login extends React.Component{
         .then((response) => {
             var googleUser = GoogleAuth.currentUser.get()
             var token = googleUser.getAuthResponse().id_token
-            console.log(token)
-            // var auth_code = response.code
-            console.log(response)
-            console.log('updating redirect')
+            this.signInCallback(token)
+            
+            
+            
+            // console.log('updating redirect')
             var signedIn = gapi.auth2.getAuthInstance().isSignedIn.get()
-            console.log('Is a user signed in?: '+signedIn)
+            // console.log('Is a user signed in?: '+signedIn)
             this.props.updateRedirect()
         })
         
