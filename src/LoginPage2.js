@@ -80,6 +80,7 @@ class SignIn2 extends React.Component{
             gapiLoaded: false,
             apiLoaded: false,
         }
+        // this.loadMapScript = this.loadMapScript.bind(this)
 
     }
 
@@ -89,8 +90,26 @@ class SignIn2 extends React.Component{
         })
     }
 
+    // loadMapScript() {
+    // // Load the google maps api script when the component is mounted.
+
+    //     loadScript("https://apis.google.com/js/platform.js")
+    //         .then((script) => {
+    //         // Grab the script object in case it is ever needed.
+    //             this.mapScript = script;
+    //             this.setState({ apiLoaded: true });
+    //         })
+    //         .catch((err: Error) => {
+    //             console.error(err.message);
+    //         });
+    // }
+
+
     componentDidMount() {
         console.log('component did mount')
+
+        // this.loadMapScript()
+
         gapi.load('auth2', () => {
             var auth2 = gapi.auth2.init({
                 client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com',

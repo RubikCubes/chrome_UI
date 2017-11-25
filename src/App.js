@@ -26,18 +26,20 @@ import AppBar from 'material-ui/AppBar';
 
 import SignIn2 from './LoginPage2'
 
-import notoSansRegular from './Fonts'
+// import notoSansRegular from './Fonts'
 
 import { Redirect } from 'react-router'
 
 import $ from 'jquery'
+
+import loadScript from './loadScript'
 
 
 const buttonSpacing = {
   margin: 12,
 };
 
-notoSansRegular()
+// notoSansRegular()
 
 
 class OptionsForm extends React.Component{
@@ -489,6 +491,7 @@ class OptionsPage extends React.Component{
 
     componentDidMount() {
         console.log('loading gapi')
+        // var gapi = loadScript("https://apis.google.com/js/platform.js")
         gapi.load('auth2', () => {
             var auth2 = gapi.auth2.init({
                 client_id: '817677528939-dss5sreclldv1inb26tb3tueac98d24r.apps.googleusercontent.com',
@@ -541,13 +544,13 @@ class OptionsPage extends React.Component{
         if (this.state.redirect) {
             console.log('redirect')
             return(
-                <Redirect to="/login" />
+                <Redirect to="/" />
             )
         }
 
         return (
             this.state.isSignedIn ?
-            <OptionsForm updateLoggedIn = {this.updateRedirect} /> : <Redirect to='/login' />
+            <OptionsForm updateLoggedIn = {this.updateRedirect} /> : <Redirect to='/' />
         )
     }    
 }
